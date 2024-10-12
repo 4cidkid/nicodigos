@@ -13,6 +13,9 @@
     "type": "git",
     "url": "https://github.com/4cidkid/nicodigos.git"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} lib/prisma/seed.ts"
+  },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.0",
     "@prisma/client": "^5.20.0",
@@ -20,6 +23,7 @@
     "@typescript-eslint/parser": "^8.8.1",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
+    "consola": "^3.2.3",
     "cookies-next": "^4.3.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.0",
@@ -36,6 +40,7 @@
     "react-icons": "^5.3.0",
     "react-transition-group": "^4.4.5",
     "tailwind-merge": "^2.5.3",
+    "ts-node": "^10.9.2",
     "uuid": "^10.0.0",
     "validator": "^13.12.0"
   },
@@ -48,6 +53,7 @@
     "@types/node": "^22.7.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
