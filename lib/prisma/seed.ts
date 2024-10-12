@@ -10,24 +10,28 @@ async function main() {
         slug: "windows",
         description: "Windows keys",
         image: "https://via.placeholder.com/150",
+        icon: "https://via.placeholder.com/50",
       },
       {
         name: "Office keys",
         slug: "office",
         description: "Office keys",
         image: "https://via.placeholder.com/150",
+        icon: "https://via.placeholder.com/50",
       },
       {
         name: "Antivirus keys",
         slug: "antivirus",
         description: "Antivirus keys",
         image: "https://via.placeholder.com/150",
+        icon: "https://via.placeholder.com/50",
       },
       {
         name: "Games keys",
         slug: "games",
         description: "Games keys",
         image: "https://via.placeholder.com/150",
+        icon: "https://via.placeholder.com/50",
       },
     ],
   });
