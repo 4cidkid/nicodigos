@@ -14,20 +14,20 @@ datasource db {
 }
 
 model User {
-  id               String            @id @default(cuid())
-  name             String?
-  email            String            @unique
-  password         String?
-  username         String?
-  locale           Locale            @default(ES)
-  emailVerified    DateTime?
-  image            String?
-  accounts         Account[]
-  sessions         Session[]
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  password      String?
+  username      String?
+  locale        Locale          @default(ES)
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
   // Optional for WebAuthn support
-  Authenticator    Authenticator[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  Authenticator Authenticator[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
 model Account {
@@ -85,7 +85,56 @@ model Authenticator {
   @@id([userId, credentialID])
 }
 
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Float
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  categoryId  String
 
+  attributes ProductAttribute[]
+  categories Category           @relation(fields: [categoryId], references: [id])
+
+  @@index([name, slug])
+}
+
+model Attribute {
+  id          String   @id @default(cuid())
+  name        String
+  icon        String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products ProductAttribute[]
+}
+
+model ProductAttribute {
+  productId   String
+  attributeId String
+  value       String
+
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+
+  @@id([productId, attributeId])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+}
 
 enum Locale {
   EN
