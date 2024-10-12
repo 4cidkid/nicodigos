@@ -1,27 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html,
+  body {
+    font-family: var(--font-inter), "Helvetica Neue", "Helvetica", "Arial",
+      sans-serif;
+    font-weight: 400;
+    font-size: 16px;
   }
-}
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-roboto-slab), "Times New Roman", Times, serif;
+    font-weight: 700;
+  }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  p {
+    font-family: var(--font-inter), "Helvetica Neue", "Helvetica", "Arial",
+      sans-serif;
+    font-weight: 400;
+  }
+
+  strong,
+  em {
+    font-family: var(--font-inter), "Helvetica Neue", "Helvetica", "Arial",
+      sans-serif;
+    font-weight: 700;
+  }
+
+  button,
+  nav {
+    font-family: var(--font-inter), "Helvetica Neue", "Helvetica", "Arial",
+      sans-serif;
+    font-weight: 500;
   }
 }
