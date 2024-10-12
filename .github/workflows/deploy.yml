@@ -3,7 +3,7 @@ name: Deploy to VPS production
 on:
   push:
     branches:
-      - master  
+      - main  
   workflow_dispatch:
 
 jobs:
