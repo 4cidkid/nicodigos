@@ -1,5 +1,6 @@
 "use server";
 import { signIn } from "@/auth";
+import { CustomNextAuthError } from "@/errors/auth.errors";
 import { prisma } from "@/lib/prisma/prisma";
 import bcrypt from "bcryptjs";
 
@@ -12,14 +13,16 @@ const submitUserAction = async (formData: FormData) => {
 
     await prisma.user.create({
       data: {
+        firstName: formData.get("firstName") as string,
+        lastName: formData.get("lastName") as string,
         email,
         password: hashedPassword,
       },
     });
 
     return { result: "User created", error: null };
-  } catch (e: any) {
-    return { result: null, error: e.message };
+  } catch {
+    return { result: null, error: "Error trying to create your user" };
   }
 };
 
@@ -31,8 +34,10 @@ const loginUserAction = async (formData: FormData) => {
       redirect: false,
     });
     return { result: "User logged in", error: null };
-  } catch (e: any) {
-    return { result: null, error: e.message };
+  } catch (e) {
+    const eIsFromNextAuth =
+      e instanceof CustomNextAuthError ? e.message : "There was an error!";
+    return { result: null, error: eIsFromNextAuth };
   }
 };
 
