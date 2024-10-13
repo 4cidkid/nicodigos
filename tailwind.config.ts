@@ -33,6 +33,12 @@ const config: Config = {
           "Times",
           "Serif",
         ],
+        montserrat: [
+          "var(--font-montserrat)",
+          "Arial",
+          "Helvetica",
+          "sans-serif",
+        ],
       },
       animation: {
         shake: "shake 0.82s cubic-bezier(.36,.07,.19,.97) both",
