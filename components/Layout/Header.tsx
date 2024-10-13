@@ -13,15 +13,9 @@ import {
 } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  BiUser,
-  BiSearch,
-  BiSupport,
-  BiWorld,
-  BiHeart,
-} from "react-icons/bi";
-import { FaBars } from "react-icons/fa";
+import { BiUser, BiSearch, BiSupport, BiWorld, BiHeart } from "react-icons/bi";
 import ShoppingCart from "./ShoppingCart";
+import AllCategoriesDrawer from "./AllCategoriesDrawer";
 
 export default function Header({
   categories,
@@ -99,7 +93,7 @@ export default function Header({
           </div>
         </div>
       </div>
-      <div className="bg-main-200 flex items-center py-2">
+      <div className="bg-main-100 flex items-center py-2">
         <Navbar
           theme={{
             root: {
@@ -124,15 +118,15 @@ export default function Header({
               base: "flex items-center",
             },
             collapse: {
-              base: "w-full md:w-auto flex items-center",
-              list: "mt-4 flex items-center flex-col md:mt-0 md:flex-row md:space-x-4 md:text-sm md:font-medium",
+              base: "flex items-center gap-0",
+              list: "flex items-center font-medium",
               hidden: {
                 on: "",
                 off: "",
               },
             },
             link: {
-              base: "block px-3.5 rounded-full transition-colors duration-150",
+              base: "flex px-4 rounded-full transition-colors duration-150",
               active: {
                 on: "bg-main-600 text-white md:text-main-700",
                 off: "text-gray-700 hover:bg-main-600 hover:text-white",
@@ -149,26 +143,10 @@ export default function Header({
           }}
         >
           <NavbarCollapse>
-            <NavbarLink
-              href="#"
-              theme={{
-                base: "block pl-0 pr-3.5 rounded-full bg-white transition-colors duration-150",
-                active: {
-                  on: "bg-main-700 text-white md:text-main-700",
-                  off: "text-gray-700 hover:text-slate-500",
-                },
-              }}
-            >
-              <div className="flex items-center gap-2 rounded-full">
-                <span className="inline-block bg-main-500 px-3 py-2 rounded-tl-full rounded-bl-full">
-                  <FaBars className="text-base text-white" />
-                </span>
-                <p className="text-xs font-semibold">All Categories</p>
-              </div>
-            </NavbarLink>
-            {categories.map((category) => (
-              <NavbarLink as={Link} key={category.id} href="#">
-                <div className="flex items-center py-1.5 bg-transparent gap-2">
+            <AllCategoriesDrawer categories={categories} />
+            {categories.slice(0, 4).map((category) => (
+              <NavbarLink as={Link} key={category.slug} href="#" className="w-32">
+                <div className="flex items-center justify-center w-full py-1.5 bg-transparent gap-2">
                   <span className="inline-block">
                     <Image
                       src={category.icon}
@@ -178,7 +156,7 @@ export default function Header({
                       className="rounded-full"
                     />
                   </span>
-                  <p className="text-xs font-semibold">{category.name}</p>
+                  <p className="text-sm font-semibold">{category.name}</p>
                 </div>
               </NavbarLink>
             ))}
