@@ -1,3 +1,4 @@
+import Logo from "../Common/Logo";
 import { HeaderProps } from "@/types/props/layout";
 import {
   Avatar,
@@ -30,8 +31,8 @@ export default function Header({
   return (
     <header className="mx-auto flex flex-col">
       <div className="container mx-auto flex items-center justify-between py-3 gap-12">
-        <div>
-          <h1>My App</h1>
+        <div className="">
+          <Logo />
         </div>
         <form className="grow">
           <label
