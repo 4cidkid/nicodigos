@@ -1,12 +1,12 @@
 import { NextAuthConfig, Session } from "next-auth";
 import authConstants from "@/constants/auth.constants";
-import { User } from "@prisma/client";
 import { googleProvider } from "./google.config";
 import { prismaAdapter } from "@/lib/auth/authPrisma";
 import { credentialsProvider } from "./credentials.config";
 import { v4 } from "uuid";
+import { Adapter } from "next-auth/adapters";
 export const nextAuthConfig: NextAuthConfig = {
-  adapter: prismaAdapter,
+  adapter: prismaAdapter as Adapter,
   providers: [googleProvider, credentialsProvider],
   pages: {
     signIn: "/auth/login",
@@ -31,14 +31,14 @@ export const nextAuthConfig: NextAuthConfig = {
     },
     async session({ session: defaultSession, user }) {
       // Make our own custom session object.
-      const userWithType = user as User;
-      const session: Session & { user: Partial<User> } = {
+      const session: Session = {
         user: {
-          name: user.name,
-          username: userWithType.username || null,
-          email: user.email,
           id: user.id,
-          locale: userWithType.locale || null,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          image: user.image,
+          email: user.email,
+          locale: user.locale,
         },
         expires: defaultSession.expires,
       };
