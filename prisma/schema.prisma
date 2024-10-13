@@ -120,7 +120,7 @@ model Product {
 
   attributes ProductAttribute[]
   categories Category           @relation(fields: [categoryId], references: [id])
-  subcategories Subcategory[]
+  subCategories Subcategory[]
 
 
   @@index([name, slug])
@@ -159,7 +159,7 @@ model Category {
   updatedAt   DateTime @updatedAt
 
   products Product[]
-  subcategories Subcategory[]
+  subCategories Subcategory[]
 }
 
 model Subcategory {
