@@ -16,12 +16,12 @@ import Link from "next/link";
 import {
   BiUser,
   BiSearch,
-  BiShoppingBag,
   BiSupport,
   BiWorld,
   BiHeart,
 } from "react-icons/bi";
 import { FaBars } from "react-icons/fa";
+import ShoppingCart from "./ShoppingCart";
 
 export default function Header({
   categories,
@@ -226,11 +226,10 @@ export default function Header({
                 <BiUser className="text-4xl p-2" />
               </NavbarLink>
               <NavbarLink
-                as={Link}
-                href="/api/auth/signin"
+                as={"button"}
                 className="bg-main-500 rounded-full shadow-sm aspect-square max-w-9 flex items-center justify-center p-0 hover:text-white text-white"
               >
-                <BiShoppingBag className="text-4xl p-2" />
+                <ShoppingCart />
               </NavbarLink>
             </NavbarCollapse>
           )}
