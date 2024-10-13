@@ -2,7 +2,7 @@ import { CustomNextAuthError } from "@/errors/auth.errors";
 import { prisma } from "@/lib/prisma/prisma";
 import Credentials from "next-auth/providers/credentials";
 import { compareSync } from "bcryptjs";
-
+import isEmail from "validator/lib/isEmail";
 export const credentialsProvider = Credentials({
   type: "credentials",
   id: "credentials",
@@ -12,16 +12,20 @@ export const credentialsProvider = Credentials({
     password: { label: "Password", type: "password" },
   },
   authorize: async (credentials) => {
-    if (!credentials) {
-      throw new CustomNextAuthError("No credentials were provided");
+    if (
+      !credentials ||
+      !credentials.email ||
+      !credentials.password ||
+      !isEmail(credentials.email as string)
+    ) {
+      throw new CustomNextAuthError(
+        "You need to provide a valid email and password"
+      );
     }
 
     const user = await prisma.user.findFirst({
       where: {
-        OR: [
-          { email: credentials.email as string },
-          { username: credentials.email as string },
-        ],
+        email: credentials.email as string,
       },
     });
 
@@ -36,12 +40,12 @@ export const credentialsProvider = Credentials({
     }
 
     return {
-      name: user.name,
-      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      image: user.image,
       email: user.email,
       id: user.id,
       locale: user.locale,
     };
   },
 });
-
