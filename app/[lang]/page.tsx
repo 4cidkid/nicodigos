@@ -6,7 +6,8 @@ import { getDictionary } from "../../dictionaries/dictionaries";
 import { HeaderDictionary, HomeDictionary } from "@/types/dictionaries";
 export default async function Home({ params }: PagePropsCommon) {
   const session = await auth();
-  const [homeDictionary, headerDictionary] = await Promise.all([
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_homeDictionary, headerDictionary] = await Promise.all([
     getDictionary("home", params.lang) as Promise<HomeDictionary>,
     getDictionary("header", params.lang) as Promise<HeaderDictionary>,
   ]);
