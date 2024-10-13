@@ -1,7 +1,7 @@
 import { Inter, Roboto_Slab } from 'next/font/google';
 import { ThemeModeScript } from 'flowbite-react';
 import { Toaster } from 'react-hot-toast';
-import './globals.css';
+import '../globals.css';
 
 
 const inter = Inter({
