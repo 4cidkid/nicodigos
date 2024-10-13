@@ -1,4 +1,4 @@
-import { Inter, Roboto_Slab } from 'next/font/google';
+import { Inter, Roboto_Slab, Montserrat } from 'next/font/google';
 import { ThemeModeScript } from 'flowbite-react';
 import { Toaster } from 'react-hot-toast';
 import '../globals.css';
@@ -14,13 +14,18 @@ const robotoSlab = Roboto_Slab({
   variable: "--font-roboto-slab",
 });
 
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${robotoSlab.variable}`}>
+    <html lang="en" className={`${inter.variable} ${robotoSlab.variable} ${montserrat.variable}`}>
       <head>
         <ThemeModeScript />
       </head>
