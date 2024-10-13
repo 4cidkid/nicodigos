@@ -15,10 +15,11 @@ datasource db {
 
 model User {
   id            String          @id @default(cuid())
-  name          String?
+  firstName     String
+  lastName      String
+  nationalId    String?
   email         String          @unique
   password      String?
-  username      String?
   locale        Locale          @default(ES)
   emailVerified DateTime?
   image         String?
@@ -28,6 +29,27 @@ model User {
   Authenticator Authenticator[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+
+  addresses Address[]
+}
+
+
+model Address {
+  id       String   @id @default(cuid())
+  firstName String
+  lastName  String
+  address   String
+  city     String
+  state    String
+  zip      String
+  country  String
+  phone    String
+  userId   String
+  type     AddressType
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -98,6 +120,8 @@ model Product {
 
   attributes ProductAttribute[]
   categories Category           @relation(fields: [categoryId], references: [id])
+  subcategories Subcategory[]
+
 
   @@index([name, slug])
 }
@@ -135,9 +159,35 @@ model Category {
   updatedAt   DateTime @updatedAt
 
   products Product[]
+  subcategories Subcategory[]
+}
+
+model Subcategory {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String
+  image       String?
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+  category Category @relation(fields: [categoryId], references: [id])
 }
 
 enum Locale {
   EN
   ES
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
 }
