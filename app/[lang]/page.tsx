@@ -13,12 +13,27 @@ export default async function Home({ params }: PagePropsCommon) {
   ]);
 
   const categories = await prisma.category.findMany({
-    take: 5,
+    select: {
+      name: true,
+      slug: true,
+      icon: true,
+      image: true,
+      subCategories: {
+        select: {
+          name: true,
+          slug: true,
+        },
+      },
+    },
   });
 
   return (
     <>
-      <Header categories={categories} session={session} headerDictionary={headerDictionary} />
+      <Header
+        categories={categories}
+        session={session}
+        headerDictionary={headerDictionary}
+      />
       <div className="h-screen bg-gray-100"></div>
     </>
   );
