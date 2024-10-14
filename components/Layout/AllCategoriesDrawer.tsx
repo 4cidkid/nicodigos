@@ -1,8 +1,10 @@
 "use client";
-import { AllCategoriesDrawerProps } from "@/types/props/layout";
-import { Drawer, NavbarLink, Sidebar } from "flowbite-react";
-import { useState } from "react";
-import { FaBars } from "react-icons/fa";
+import Image from 'next/image';
+import { AllCategoriesDrawerProps } from '@/types/props/layout';
+import { Drawer, NavbarLink, Sidebar } from 'flowbite-react';
+import { FaBars } from 'react-icons/fa';
+import { useState } from 'react';
+
 export default function AllCategoriesDrawer({
   categories,
 }: AllCategoriesDrawerProps) {
@@ -35,7 +37,7 @@ export default function AllCategoriesDrawer({
         onClose={handleClose}
         theme={{
           root: {
-            base: "fixed z-40 overflow-y-auto bg-white p-4 transition-transform dark:bg-gray-800 !ml-0 !max-w-[250px]",
+            base: "fixed z-40 overflow-y-auto bg-white p-4 transition-transform dark:bg-gray-800 !ml-03",
           },
         }}
       >
@@ -49,13 +51,26 @@ export default function AllCategoriesDrawer({
             </span>
             <p className="text-sm font-semibold text-white">All Categories</p>
           </button>
-          <Sidebar aria-label="Sidebar with multi-level dropdown example">
+          <Sidebar
+            aria-label="Sidebar with multi-level dropdown example"
+            className="[&>div]:bg-transparent [&>div]:p-0"
+          >
             <div className="flex h-full flex-col justify-between py-2">
               <div>
                 <Sidebar.Items>
                   <Sidebar.ItemGroup>
                     {categories.map((category) => (
-                      <Sidebar.Item key={category.slug} href="/e-commerce/products" icon={FaBars}>
+                      <Sidebar.Item
+                        key={category.slug}
+                        icon={() => (
+                          <Image
+                            src={category.icon}
+                            alt={category.name}
+                            width={24}
+                            height={24}
+                          />
+                        )}
+                      >
                         {category.name}
                       </Sidebar.Item>
                     ))}
