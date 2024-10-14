@@ -5,18 +5,21 @@ import { AllCategoriesDrawerProps } from "@/types/props/layout";
 import { Drawer, NavbarLink, Sidebar } from "flowbite-react";
 import { FaBars } from "react-icons/fa";
 import { useState } from "react";
-
 export default function AllCategoriesDrawer({
   categories,
 }: AllCategoriesDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isAllCategoriesActive, setIsAllCategoriesActive] = useState(true);
+  const [inProp, setInProp] = useState(false);
 
   const handleClose = () => setIsOpen(false);
   const handleOpen = () => setIsOpen(true);
 
   const handleAllCategories = () => setIsAllCategoriesActive(true);
   const handleCategory = () => setIsAllCategoriesActive(false);
+
+  const handleEnter = () => setInProp(true);
+  const handleExit = () => setInProp(false);
 
   return (
     <>
@@ -43,69 +46,89 @@ export default function AllCategoriesDrawer({
         onClose={handleClose}
         theme={{
           root: {
-            base: "fixed z-40 overflow-y-auto bg-white p-4 transition-transform dark:bg-gray-800 !ml-03",
+            base: "fixed z-40 bg-white p-4 transition-transform dark:bg-gray-800 !ml-03",
           },
         }}
       >
-        <Drawer.Items>
-          <Sidebar
-            aria-label="Sidebar with multi-level dropdown example"
-            className="[&>div]:bg-transparent [&>div]:p-0 w-full"
+        <div className="contents relative">
+          <div
+            className={clsx(
+              "absolute top-0 left-full h-full bg-red-500 transition-opacity duration-300",
+              {
+                "opacity-0": !inProp,
+                "opacity-100": inProp,
+                hidden: !isOpen,
+              }
+            )}
           >
-            <div className="flex h-full flex-col justify-between py-2">
-              <div>
-                <Sidebar.Items>
-                  <Sidebar.ItemGroup>
-                    <div className="contents">
-                      <Sidebar.Item
-                        icon={() => (
-                          <FaBars
-                            className={clsx("text-base", {
-                              "text-white": isAllCategoriesActive,
-                              "text-gray-700": !isAllCategoriesActive,
-                            })}
-                          />
-                        )}
-                        className={clsx(
-                          "pl-2.5 font-semibold text-sm hover:text-white rounded-full transition-colors cursor-pointer hover:bg-main-600",
-                          {
-                            "bg-main-600 text-white": isAllCategoriesActive,
-                            "bg-transparent text-gray-700":
-                              !isAllCategoriesActive,
-                          }
-                        )}
-                      >
-                        All Categories
-                      </Sidebar.Item>
-                    </div>
-                    {categories.map((category) => (
-                      <div
-                        className="contents"
-                        key={category.slug}
-                        onMouseEnter={handleCategory}
-                        onMouseLeave={handleAllCategories}
-                      >
+            asdfasdfasd
+          </div>
+          <Drawer.Items>
+            <Sidebar
+              aria-label="Sidebar with multi-level dropdown example"
+              className="[&>div]:bg-transparent [&>div]:p-0 w-full"
+            >
+              <div className="flex h-full flex-col justify-between py-2">
+                <div>
+                  <Sidebar.Items>
+                    <Sidebar.ItemGroup>
+                      <div className="contents">
                         <Sidebar.Item
                           icon={() => (
-                            <Image
-                              src={category.icon}
-                              alt={category.name}
-                              width={16}
-                              height={16}
+                            <FaBars
+                              className={clsx("text-base", {
+                                "text-white": isAllCategoriesActive,
+                                "text-gray-700": !isAllCategoriesActive,
+                              })}
                             />
                           )}
-                          className="pl-2.5 font-semibold text-sm text-gray-700 hover:bg-main-600 hover:text-white rounded-full transition-colors"
+                          className={clsx(
+                            "pl-2.5 font-semibold text-sm hover:text-white rounded-full transition-colors cursor-pointer hover:bg-main-600",
+                            {
+                              "bg-main-600 text-white": isAllCategoriesActive,
+                              "bg-transparent text-gray-700":
+                                !isAllCategoriesActive,
+                            }
+                          )}
                         >
-                          {category.name}
+                          All Categories
                         </Sidebar.Item>
                       </div>
-                    ))}
-                  </Sidebar.ItemGroup>
-                </Sidebar.Items>
+                      {categories.map((category) => (
+                        <div
+                          className="contents"
+                          key={category.slug}
+                          onMouseEnter={() => {
+                            handleCategory();
+                            handleEnter();
+                          }}
+                          onMouseLeave={() => {
+                            handleAllCategories();
+                            handleExit();
+                          }}
+                        >
+                          <Sidebar.Item
+                            icon={() => (
+                              <Image
+                                src={category.icon}
+                                alt={category.name}
+                                width={16}
+                                height={16}
+                              />
+                            )}
+                            className="pl-2.5 font-semibold text-sm text-gray-700 hover:bg-main-600 hover:text-white rounded-full transition-colors"
+                          >
+                            {category.name}
+                          </Sidebar.Item>
+                        </div>
+                      ))}
+                    </Sidebar.ItemGroup>
+                  </Sidebar.Items>
+                </div>
               </div>
-            </div>
-          </Sidebar>
-        </Drawer.Items>
+            </Sidebar>
+          </Drawer.Items>
+        </div>
       </Drawer>
     </>
   );
