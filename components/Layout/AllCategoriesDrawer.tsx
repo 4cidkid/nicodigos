@@ -8,7 +8,7 @@ import { useState } from 'react';
 export default function AllCategoriesDrawer({
   categories,
 }: AllCategoriesDrawerProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleClose = () => setIsOpen(false);
   const handleOpen = () => setIsOpen(true);
