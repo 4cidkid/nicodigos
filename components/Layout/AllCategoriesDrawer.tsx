@@ -3,7 +3,6 @@ import { AllCategoriesDrawerProps } from "@/types/props/layout";
 import { Drawer, NavbarLink, Sidebar } from "flowbite-react";
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
-import Image from "next/image";
 export default function AllCategoriesDrawer({
   categories,
 }: AllCategoriesDrawerProps) {
