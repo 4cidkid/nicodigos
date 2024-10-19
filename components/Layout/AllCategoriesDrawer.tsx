@@ -11,6 +11,9 @@ export default function AllCategoriesDrawer({
   const [isOpen, setIsOpen] = useState(false);
   const [isAllCategoriesActive, setIsAllCategoriesActive] = useState(true);
   const [inProp, setInProp] = useState(false);
+  const [subcategoriesActive, setSubCategoriesActive] = useState<
+    AllCategoriesDrawerProps["categories"][number]["subCategories"]
+  >([]);
 
   const handleClose = () => setIsOpen(false);
   const handleOpen = () => setIsOpen(true);
@@ -51,18 +54,6 @@ export default function AllCategoriesDrawer({
         }}
       >
         <div className="contents relative">
-          <div
-            className={clsx(
-              "absolute top-0 left-full h-full bg-red-500 transition-opacity duration-300",
-              {
-                "opacity-0": !inProp,
-                "opacity-100": inProp,
-                hidden: !isOpen,
-              }
-            )}
-          >
-            asdfasdfasd
-          </div>
           <Drawer.Items>
             <Sidebar
               aria-label="Sidebar with multi-level dropdown example"
@@ -101,10 +92,12 @@ export default function AllCategoriesDrawer({
                           onMouseEnter={() => {
                             handleCategory();
                             handleEnter();
+                            setSubCategoriesActive(category.subCategories);
                           }}
                           onMouseLeave={() => {
                             handleAllCategories();
                             handleExit();
+                            setSubCategoriesActive([]);
                           }}
                         >
                           <Sidebar.Item
@@ -120,6 +113,45 @@ export default function AllCategoriesDrawer({
                           >
                             {category.name}
                           </Sidebar.Item>
+                          <div
+                            className={clsx(
+                              "absolute top-0 left-full h-full bg-white transition-opacity duration-300",
+                              {
+                                "opacity-0": !inProp,
+                                "opacity-100": inProp,
+                                hidden: !isOpen,
+                              }
+                            )}
+                          >
+                            <Sidebar
+                              aria-label="Sidebar with multi-level dropdown example"
+                              className="[&>div]:bg-transparent [&>div]:p-0 w-full"
+                            >
+                              <div className="flex h-full flex-col justify-between py-2">
+                                <div>
+                                  <Sidebar.Items>
+                                    <Sidebar.ItemGroup>
+                                      {subcategoriesActive.map(
+                                        (subcategory) => (
+                                          <div
+                                            className="contents"
+                                            key={subcategory.slug}
+                                          >
+                                            <Sidebar.Item
+                                              icon={() => <></>}
+                                              className="pl-2.5 font-semibold text-sm text-gray-700 hover:bg-main-600 hover:text-white rounded-full transition-colors"
+                                            >
+                                              {subcategory.name}
+                                            </Sidebar.Item>
+                                          </div>
+                                        )
+                                      )}
+                                    </Sidebar.ItemGroup>
+                                  </Sidebar.Items>
+                                </div>
+                              </div>
+                            </Sidebar>
+                          </div>
                         </div>
                       ))}
                     </Sidebar.ItemGroup>
