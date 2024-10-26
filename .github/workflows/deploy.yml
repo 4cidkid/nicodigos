@@ -108,6 +108,9 @@ jobs:
             chmod 600 .env
             source ~/.bashrc
             source ~/.nvm/nvm.sh
+            git fetch
+            git reset --hard HEAD
+            git pull origin main
             nvm use 20
             yarn install --prod
             npx prisma db push
