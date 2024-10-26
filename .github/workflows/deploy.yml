@@ -52,6 +52,11 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
+      - name: Run prisma push
+        run: npx prisma db push
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      
       - name: Run prisma generate
         run: npx prisma generate
         env:
