@@ -39,7 +39,7 @@ jobs:
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
       - name: Restore cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             .next/cache
@@ -64,7 +64,7 @@ jobs:
         run: zip -r build.zip .next
 
       - name: Upload ZIP file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: build.zip
@@ -77,19 +77,21 @@ jobs:
     needs: build
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build
           path: .
 
-      - name: Upload zip to VPS
-        uses: appleboy/scp-action@v0.1.2
+      - name: Upload build.zip to VPS
+        uses: betanzos/scp-upload@v1
         with:
+          source: "build.zip"
           host: ${{ secrets.VPS_HOST }}
+          port: '22'
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "build.zip"
-          target: "~/nicodigos/"
+          remote_dir: "~/nicodigos"
+          recursive: 'true'
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.5
