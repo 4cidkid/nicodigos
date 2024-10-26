@@ -22,6 +22,7 @@ export default async function Home({ params }: PagePropsCommon) {
         select: {
           name: true,
           slug: true,
+          image: true,
         },
       },
     },
