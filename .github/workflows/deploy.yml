@@ -105,8 +105,8 @@ jobs:
             rm build.zip
             cat > .env << EOF
             DATABASE_URL='${{ secrets.DATABASE_URL }}'
-            NEXTAUTH_URL='https://nicodigos.nicotordev.com/'
-            NEXTAUTH_SECRET='${{ secrets.NEXTAUTH_SECRET }}'
+            AUTH_URL='https://nicodigos.nicotordev.com/'
+            AUTH_SECRET='${{ secrets.NEXTAUTH_SECRET }}'
             GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}'
             GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}'
             EOF
