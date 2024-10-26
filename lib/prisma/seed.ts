@@ -54,6 +54,7 @@ async function main() {
       name: faker.commerce.productName(),
       slug: faker.lorem.slug(),
       icon: faker.image.urlPlaceholder({ width: 50, height: 50 }),
+      image: faker.image.urlPlaceholder({ width: 150, height: 150 }),
       description: faker.commerce.productDescription(),
       categoryId: faker.helpers.arrayElement(categories).id,
     })),
