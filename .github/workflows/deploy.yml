@@ -3,7 +3,7 @@ name: Deploy to VPS production
 on:
   push:
     branches:
-      - main  
+      - main
   workflow_dispatch:
 
 jobs:
@@ -11,51 +11,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Detect package manager
-      id: detect-package-manager
-      run: |
-        if [ -f "${{ github.workspace }}/yarn.lock" ]; then
-          echo "manager=yarn" >> $GITHUB_OUTPUT
-          echo "command=install" >> $GITHUB_OUTPUT
-          echo "runner=yarn" >> $GITHUB_OUTPUT
-          exit 0
-        elif [ -f "${{ github.workspace }}/package.json" ]; then
-          echo "manager=npm" >> $GITHUB_OUTPUT
-          echo "command=ci" >> $GITHUB_OUTPUT
-          echo "runner=npx --no-install" >> $GITHUB_OUTPUT
-          exit 0
-        else
-          echo "Unable to determine package manager"
-          exit 1
-        fi
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: "20"
-        cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: Detect package manager
+        id: detect-package-manager
+        run: |
+          if [ -f "${{ github.workspace }}/yarn.lock" ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+            echo "command=install" >> $GITHUB_OUTPUT
+            echo "runner=yarn" >> $GITHUB_OUTPUT
+            exit 0
+          elif [ -f "${{ github.workspace }}/package.json" ]; then
+            echo "manager=npm" >> $GITHUB_OUTPUT
+            echo "command=ci" >> $GITHUB_OUTPUT
+            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
+            exit 0
+          else
+            echo "Unable to determine package manager"
+            exit 1
+          fi
 
-    - name: Restore cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          .next/cache
-      # Generate a new cache whenever packages or source files change.
-        key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-      # If source files changed but packages didn't, rebuild from a prior cache.
-        restore-keys: |
-          ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: ${{ steps.detect-package-manager.outputs.manager }}
 
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
 
-    - name: Install dependencies
-      run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      - name: Install dependencies
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+        
+      - name: Build Next.js app
+        run: ${{ steps.detect-package-manager.outputs.runner }} next build
 
-    - name: Build Next.js app
-      run: ${{ steps.detect-package-manager.outputs.runner }} next build
+      - name: Create ZIP file
+        run: zip -r build.zip .next
 
+      - name: Upload ZIP file
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build.zip
 
   deploy:
     environment:
@@ -64,7 +71,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Deploy to VPS via SSH
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: .
+
+      - name: Upload build.zip to VPS
+        uses: betanzos/scp-upload@v1
+        with:
+          source: "build.zip"
+          host: ${{ secrets.VPS_HOST }}
+          port: '22'
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          remote_dir: "~/nicodigos"
+          recursive: 'true'
+
+      - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -72,19 +96,23 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd ~/nicodigos
+            unzip -o build.zip -d .
+            rm build.zip
             cat > .env << EOF
             DATABASE_URL='${{ secrets.DATABASE_URL }}'
-            NEXTAUTH_URL='https://nicodigos.nicotordev.com/'
-            NEXTAUTH_SECRET='${{ secrets.NEXTAUTH_SECRET }}'
+            AUTH_URL='https://nicodigos.nicotordev.com/'
+            AUTH_SECRET='${{ secrets.NEXTAUTH_SECRET }}'
             GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}'
             GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}'
             EOF
             chmod 600 .env
             source ~/.bashrc
             source ~/.nvm/nvm.sh
+            git fetch
+            git reset --hard HEAD
             git pull origin main
             nvm use 20
             yarn install --prod
             npx prisma db push
-            yarn run build
+            npx prisma generate
             pm2 restart nicodigos
