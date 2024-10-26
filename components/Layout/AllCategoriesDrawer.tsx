@@ -10,6 +10,9 @@ export default function AllCategoriesDrawer({
 }: AllCategoriesDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isAllCategoriesActive, setIsAllCategoriesActive] = useState(true);
+  const [activeSubcategory, setActiveSubcategory] = useState<
+    AllCategoriesDrawerProps["categories"][number]["subCategories"] | null
+  >(null);
   const [inProp, setInProp] = useState(false);
 
   const handleClose = () => setIsOpen(false);
@@ -20,6 +23,19 @@ export default function AllCategoriesDrawer({
 
   const handleEnter = () => setInProp(true);
   const handleExit = () => setInProp(false);
+
+  const handleActiveCategory = (
+    subCategory: AllCategoriesDrawerProps["categories"][number]["subCategories"]
+  ) => {
+    handleCategory();
+    handleEnter();
+    setActiveSubcategory(subCategory);
+  };
+
+  const handleCategoryDeactivate = () => {
+    handleAllCategories();
+    handleExit();
+  };
 
   return (
     <>
@@ -53,7 +69,7 @@ export default function AllCategoriesDrawer({
         <div className="contents relative">
           <div
             className={clsx(
-              "absolute top-0 left-full h-full bg-red-500 transition-opacity duration-300",
+              "absolute top-0 left-full h-full bg-white transition-opacity duration-300 border-l py-6 px-3",
               {
                 "opacity-0": !inProp,
                 "opacity-100": inProp,
@@ -61,7 +77,17 @@ export default function AllCategoriesDrawer({
               }
             )}
           >
-            asdfasdfasd
+            {activeSubcategory && activeSubcategory.filter((subCategory) => subCategory.image !== null).map((subCategory) => (
+              <div key={subCategory.slug} className="flex items-center gap-2">
+                <Image
+                  src={subCategory.name}
+                  alt={subCategory.image as string}
+                  width={16}
+                  height={16}
+                />
+                <p className="text-sm font-semibold">{subCategory.name}</p>
+              </div>
+            ))}
           </div>
           <Drawer.Items>
             <Sidebar
@@ -98,14 +124,10 @@ export default function AllCategoriesDrawer({
                         <div
                           className="contents"
                           key={category.slug}
-                          onMouseEnter={() => {
-                            handleCategory();
-                            handleEnter();
-                          }}
-                          onMouseLeave={() => {
-                            handleAllCategories();
-                            handleExit();
-                          }}
+                          onMouseEnter={() =>
+                            handleActiveCategory(category.subCategories)
+                          }
+                          onMouseLeave={handleCategoryDeactivate}
                         >
                           <Sidebar.Item
                             icon={() => (
